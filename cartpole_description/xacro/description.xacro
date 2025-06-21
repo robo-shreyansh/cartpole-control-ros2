@@ -22,19 +22,41 @@
 <xacro:macro name="description"> 
 
     <!-- Links -->
+    <link name="world">
+    </link>
+
     <link name="base_link">
     </link>
 
-    <xacro:cuboid_link name="rail_link" mass="0" length="${rail_length}" width="${rail_width}" height="${rail_height}" color="grey" orig_xyz="0 0 0" orig_rpy="0 0 0" />
+
+    <xacro:cuboid_link name="rail_link" mass="10000" length="${rail_length}" width="${rail_width}" height="${rail_height}" color="grey" orig_xyz="0 0 0" orig_rpy="0 0 0" />
     <xacro:cuboid_link name="cart_link" mass="${cart_mass}" length="${cart_length}" width="${cart_width}" height="${cart_height}" color="blue" orig_xyz="0 0 0" orig_rpy="0 0 0" />
     <xacro:cuboid_link name="pole_link" mass="${pole_mass}" length="${pole_length}" width="${pole_width}" height="${pole_height}" color="yellow" orig_xyz="0 0 ${pole_length*0.5}" orig_rpy="0 1.57 0" />
     <!-- <link name="pole_tip" -->
 
+    <gazebo reference="rail_link">
+        <material>Gazebo/Grey </material>
+    </gazebo>
+
+    <gazebo reference="cart_link">
+        <material>Gazebo/Blue </material>
+    </gazebo>
+
+    <gazebo reference="pole_link">
+        <material>Gazebo/Yellow </material>
+    </gazebo>
+
     <!-- Joints -->
+    <joint name="fixed_world" type="fixed">
+        <origin xyz="0 0 1" rpy="0 0 0" />
+        <parent link="world" />
+        <child link="base_link" />
+    </joint>
+
     <joint name="base_joint" type="fixed">
         <parent link="base_link"/>
         <child link="rail_link"/>
-        <origin xyz="0 0 1" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="0 0 0" />
     </joint>
 
     <joint name="rail_cart_joint" type="prismatic">
@@ -43,6 +65,7 @@
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <axis xyz="1 0 0" />
         <limit effort="100" velocity="50" lower="-${rail_length*0.5}" upper="${rail_length*0.5}" />
+        <dynamics damping="0.01" friction="0.01" />
     </joint>
 
     <joint name="cart_pole_joint" type="continuous">
@@ -51,6 +74,7 @@
         <origin xyz="0 -${(cart_width+pole_width)*0.5} 0"/>
         <axis xyz="0 1 0" />
         <limit effort="100" velocity="100" />
+        <dynamics damping="0.01" friction="0.01" />
     </joint>
 
 </xacro:macro>
