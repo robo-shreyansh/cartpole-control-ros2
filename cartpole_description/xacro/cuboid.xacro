@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find cartpole_description)/xacro/materials.xacro" />
+    <!-- <xacro:materials color="red"/> -->
+    <xacro:macro name="cuboid_link" params="name mass length width height color orig_xyz orig_rpy">
+        
+        <link name="${name}" >
+            <visual>
+                <origin xyz="${orig_xyz}" rpy="${orig_rpy}"/>
+                <geometry>
+                    <box size="${length} ${width} ${height}" />
+                </geometry>
+                <xacro:materials color="${color}"/> 
+            </visual>
+
+            <inertial>
+                <mass value="${mass}" />
+                <inertia ixx="${mass*(width**2 + height**2)/12 }" ixy="0" ixz="0" iyy="${mass*(length**2 + height**2)/12 }" iyz="0" izz="${mass*(width**2 + length**2)/12 }" />    
+                <origin xyz="${orig_xyz}" rpy="${orig_rpy}"/>
+            </inertial>
+        </link>
+
+    </xacro:macro>
+    
+</robot>

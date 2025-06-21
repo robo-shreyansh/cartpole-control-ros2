@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!--Lengths along +x ; Widths along y-->
+<xacro:property name="rail_length" value="3.0" />
+<xacro:property name="rail_width" value="0.02" />
+<xacro:property name="rail_height" value="0.02" />
+
+<xacro:property name="cart_length" value="0.2" />
+<xacro:property name="cart_width" value="0.1" />
+<xacro:property name="cart_height" value="0.1" />
+
+<xacro:property name="pole_length" value="0.5" /> 
+<xacro:property name="pole_width" value="0.01" />
+<xacro:property name="pole_height" value="0.02" />
+
+<xacro:property name="cart_mass" value="2.0" />
+<xacro:property name="pole_mass" value="0.75" />
+
+<xacro:include filename = "$(find cartpole_description)/xacro/cuboid.xacro" />
+
+<xacro:macro name="description"> 
+
+    <!-- Links -->
+    <link name="base_link">
+    </link>
+
+    <xacro:cuboid_link name="rail_link" mass="0" length="${rail_length}" width="${rail_width}" height="${rail_height}" color="grey" orig_xyz="0 0 0" orig_rpy="0 0 0" />
+    <xacro:cuboid_link name="cart_link" mass="${cart_mass}" length="${cart_length}" width="${cart_width}" height="${cart_height}" color="blue" orig_xyz="0 0 0" orig_rpy="0 0 0" />
+    <xacro:cuboid_link name="pole_link" mass="${pole_mass}" length="${pole_length}" width="${pole_width}" height="${pole_height}" color="yellow" orig_xyz="0 0 ${pole_length*0.5}" orig_rpy="0 1.57 0" />
+    <!-- <link name="pole_tip" -->
+
+    <!-- Joints -->
+    <joint name="base_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="rail_link"/>
+        <origin xyz="0 0 1" rpy="0 0 0" />
+    </joint>
+
+    <joint name="rail_cart_joint" type="prismatic">
+        <parent link="rail_link"/>
+        <child link="cart_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="1 0 0" />
+        <limit effort="100" velocity="50" lower="-${rail_length*0.5}" upper="${rail_length*0.5}" />
+    </joint>
+
+    <joint name="cart_pole_joint" type="continuous">
+        <parent link="cart_link"/>
+        <child link="pole_link" />
+        <origin xyz="0 -${(cart_width+pole_width)*0.5} 0"/>
+        <axis xyz="0 1 0" />
+        <limit effort="100" velocity="100" />
+    </joint>
+
+</xacro:macro>
+
+</robot>
