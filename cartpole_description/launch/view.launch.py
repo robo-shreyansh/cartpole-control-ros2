@@ -6,17 +6,14 @@ import xacro
 
 def generate_launch_description():
 
-    description_pkg_path = os.path.join(get_package_share_directory("cartpole_description"))
     description_pkg_path = get_package_share_directory("cartpole_description")
 
-    # print(description_pkg_path, "And")
-    # print(os.path.join(description_pkg_path))
     xacro_file = os.path.join(description_pkg_path, "xacro", "robot.xacro")
     rviz_config = os.path.join(description_pkg_path, "config", "default.cartpole.rviz")
     doc = xacro.parse(open(xacro_file))
     xacro.process_doc(doc)
     cartpole_description = doc.toxml()
-    print("Desc: ", cartpole_description)
+
     rsp_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
